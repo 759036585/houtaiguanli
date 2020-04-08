@@ -13,7 +13,16 @@ const routes = [
   {
     // 首页
     path: '/',
-    component: () => import('@/views/Home')
+    component: () => import('@/views/Home'),
+    children:[
+      {
+        path:'/', redirect:'/welcome',
+      },
+      {
+        // 首页欢迎页面
+        path:'/welcome', component:() => import('@/views/Welcome/welcome')
+      }
+    ]
   }
 ]
 
