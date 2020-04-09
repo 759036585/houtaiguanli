@@ -21,6 +21,8 @@
           unique-opened
           :collapse="isCollapse" 
           :collapse-transition="false"
+          router
+          :default-active="menuActive"
         >
         <!-- 一级菜单 -->
           <el-submenu :index="item.id+''" v-for="item in menuList" :key="item.id">
@@ -32,7 +34,7 @@
               <span>{{item.authName}}</span>
             </template>
             <!-- 二级菜单 -->
-            <el-menu-item :index="itemChild.id+''" v-for="itemChild in item.children" :key="itemChild.id">
+            <el-menu-item @click="savaNavState('/'+itemChild.path)" :index="'/'+itemChild.path" v-for="itemChild in item.children" :key="itemChild.id">
                <template slot="title">
               <!-- 二级菜单图标 -->
               <i class="el-icon-menu"></i>
@@ -68,10 +70,19 @@ export default {
         '145':"iconfont icon-shuju"
       },
       // 侧边栏切换
-      isCollapse: false
+      isCollapse: false,
+      // 点击侧边栏高亮
+      menuActive:''
     }
   },
-  computed: {},
+  watch: {
+    $route (){
+      if(this.$route){
+      }
+    }
+  },
+  computed: {
+  },
   // components: {
   //   'top-bar': TopBar,
   //   'side-bar': SideBar
@@ -88,15 +99,20 @@ export default {
       const {data:res} = await this.$http.get('/menus')
       if(res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menuList = res.data
-      console.log(res)
     },
     // 切换侧边栏
     toggleSide() {
       this.isCollapse = !this.isCollapse
+    },
+    // 保存激活地址
+    savaNavState(activePath){
+      window.sessionStorage.setItem('activePath',activePath)
+      this.menuActive = activePath
     }
   },
   created() {
     this.getMenuList()
+    this.menuActive = window.sessionStorage.getItem('activePath')
   },
 }
 </script>
@@ -146,6 +162,6 @@ export default {
 }
 .el-main {
   background-color: #eee;
-  padding: 0;
+  padding: 10px;
 }
 </style>

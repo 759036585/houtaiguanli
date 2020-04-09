@@ -14,13 +14,17 @@ const routes = [
     // 首页
     path: '/',
     component: () => import('@/views/Home'),
+    redirect:'/welcome',
     children:[
       {
-        path:'/', redirect:'/welcome',
+        // 首页欢迎页面
+        path:'/welcome', component:() => import('@/views/Welcome/welcome'),
+        meta: {title:'首页'}
       },
       {
-        // 首页欢迎页面
-        path:'/welcome', component:() => import('@/views/Welcome/welcome')
+        // 用户列表页面
+        path:'/users', component:() => import('@/views/Users/users'),
+        meta: {title:'用户列表'}
       }
     ]
   }
