@@ -37,7 +37,7 @@
           <template slot-scope="scope">
             <el-button type="primary" icon="el-icon-edit" size='mini' @click="editDialogVisibleUser(scope.row.id)"></el-button>
             <el-tooltip  effect="dark" content="分配角色" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" size='mini'></el-button>
+              <el-button type="warning" icon="el-icon-setting" size='mini' @click="allocUserDialogVisible(scope.row)"></el-button>
             </el-tooltip>
             <el-button type="danger" icon="el-icon-delete" size='mini' @click="delUserMessage(scope.row.id)"></el-button>
           </template>
@@ -103,6 +103,30 @@
         <el-button type="primary" @click="editUser">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 分配角色弹出框 -->
+    <el-dialog
+      title="分配角色"
+      :visible.sync="userDialogVisible"
+      width="30%">
+      <div>
+        <p>当前的用户:{{userInfo.username}}</p>
+        <p>当前的角色:{{userInfo.role_name}}</p>
+        <p>
+          <el-select v-model="userId" placeholder="请选择">
+            <el-option
+              v-for="item in userRoles"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="userDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="allocUser">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -141,6 +165,8 @@ export default {
       addDialogVisible:false,
       // 修改用户弹出层
       editDialogVisible: false,
+      // 分配角色弹出框
+      userDialogVisible: false,
       // 添加用户对象
       addUserForm: {
         username:'',
@@ -169,8 +195,13 @@ export default {
         mobile:[
           {validator: checkMobile,trigger:'blur'}
         ]
-      }
-    };
+      },
+      // 角色信息
+      userInfo: {},
+      // 角色描述列表
+      userRoles:[],
+      userId: ''
+    }
   },
   methods: {
     // 获取用户列表
@@ -251,6 +282,21 @@ export default {
       if(result.meta.status !== 200) return this.$message.error(result.meta.msg)
       this.$message.success(result.meta.msg)
       this.getUserList()
+    },
+    // 分配角色弹出框
+    async allocUserDialogVisible(role) {
+      this.userInfo = role
+      const {data:res} = await this.$http.get('roles')
+      if(res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      this.userRoles = res.data
+      this.userDialogVisible = true
+    },
+    async allocUser(){
+      const {data:res} = await this.$http.put(`users/${this.userInfo.id}/role`,{rid:this.userId})
+      if(res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      this.getUserList()
+      this.$message.success(res.meta.msg)
+      this.userDialogVisible = false
     }
   },
   created() {

@@ -25,6 +25,22 @@ const routes = [
         // 用户列表页面
         path:'/users', component:() => import('@/views/Users/users'),
         meta: {title:'用户列表'}
+      },
+      {
+        // 权限列表
+        path:'/rights',component:() => import('@/views/Rights/rights')
+      },
+      {
+        // 角色列表
+        path:'/roles',component:() => import('@/views/Roles/roles')
+      },
+      {
+        // 商品分类
+        path:'/categories', component: () => import('@/views/Category/Category')
+      },
+      {
+        // 分类参数
+        path:'/params', component: () => import('@/views/Params/params')
       }
     ]
   }

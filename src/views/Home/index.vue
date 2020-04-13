@@ -44,6 +44,9 @@
             </el-menu-item>
           </el-submenu>
         </el-menu>
+        <div>
+          <audio src="../../plugins/Mp3/01.mp3" volume loop controls style="width: 90%;"></audio>
+        </div>
       </el-aside>
       <!-- 页面组件显示区域 -->
       <el-main>
